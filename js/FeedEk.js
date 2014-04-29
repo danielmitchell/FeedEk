@@ -1,7 +1,8 @@
 /*
 * FeedEk jQuery RSS/ATOM Feed Plugin v2.0
 * http://jquery-plugins.net/FeedEk/FeedEk.html  https://github.com/enginkizil/FeedEk
-* Author : Engin KIZIL http://www.enginkizil.com   
+* Author : Engin KIZIL http://www.enginkizil.com
+* Branched & Modified By: Storm Logic http://www.stormlogic.com.au
 */
 
 (function ($) {
@@ -14,17 +15,22 @@
             CharacterLimit: 0,
             TitleLinkTarget: "_blank",
             DateFormat: "",
-            DateFormatLang:"en"
+            DateFormatLang:"en",
+            ShowLoader: true
         }, opt);
-
-        var id = $(this).attr("id"), i, s = "",dt;
-        $("#" + id).empty().append('<img src="loader.gif" />');
+        
+        var $el = $(this), i, s = "",dt;
+        $el.empty();
+        
+        if(def.ShowLoader){
+            $el.append('<img src="loader.gif" />');
+        }
 
         $.ajax({
             url: "http://ajax.googleapis.com/ajax/services/feed/load?v=1.0&num=" + def.MaxCount + "&output=json&q=" + encodeURIComponent(def.FeedUrl) + "&hl=en&callback=?",
             dataType: "json",
             success: function (data) {
-                $("#" + id).empty();
+                $el.empty();
                 $.each(data.responseData.feed.entries, function (e, item) {
                     s += '<li><div class="itemTitle"><a href="' + item.link + '" target="' + def.TitleLinkTarget + '" >' + item.title + "</a></div>";
                     
@@ -50,7 +56,7 @@
                         }
                     }
                 });
-                $("#" + id).append('<ul class="feedEkList">' + s + "</ul>");
+                $el.append('<ul class="feedEkList">' + s + "</ul>");
             }
         });
     };
